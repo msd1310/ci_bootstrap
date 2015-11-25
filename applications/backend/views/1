@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Shree sai samartha Pay & Park</title>
+
+    <!-- Bootstrap Core CSS -->
+<link href="<?php echo base_url('assets/data/bower_components/bootstrap/dist/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+<link href="<?php echo base_url('assets/data/bower_components/metisMenu/dist/metisMenu.min.css'); ?>" rel="stylesheet">
+    <!-- DataTables CSS -->
+<link href="<?php echo base_url('assets/data/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css'); ?>" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+<link href="<?php echo base_url('assets/data/bower_components/datatables-responsive/css/dataTables.responsive.css'); ?>" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+<link href="<?php echo base_url('assets/data/bower_components/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet">
+
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css" type="text/css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+ <script type="text/javascript">
+    $(document).ready(function() {
+
+$('.datepicker').each(function(){
+    $(this).datepicker({
+        changeMonth: true,//this option for allowing user to select month
+        changeYear: true //this option for allowing user to select from year range
+        });
+        $(this).datepicker().datepicker("setDate", new Date());
+});
+    $("#show-row").click(function() {
+        var name = $(this).attr('name');
+                //alert($('#caption-head').text());
+        $(".hiderow").each(function(){
+                if(name == "show"){
+                $(".hiderow").show();
+                $('#show-row').attr('name','hide');
+                $('#export-button').text("Detailed Report");
+                        $("#show-row").tooltip('hide')
+                                  .attr('data-original-title', "Click here to hide details")
+                                  .tooltip('fixTitle')
+                                  .tooltip('show');
+                }else if (name == "hide"){
+                $(".hiderow").hide();           
+                $('#show-row').attr('name','show');
+                $('#export-button').text("Estimate Report");
+                        $("#show-row").tooltip('hide')
+                                  .attr('data-original-title', "Click here to show details")
+                                  .tooltip('fixTitle')
+                                  .tooltip('show');
+                }
+        });
+    });$("[data-toggle='tooltip']").tooltip();
+});
+    </script>
+<style>
+#show-row {
+    background-color: grey;
+    color: black;
+    font-weight: bold;
+}
+.red-tooltip + .tooltip > .tooltip-inner {background-color:#104e8b ;}
+#show-row:hover {
+    background-color: steelblue;
+}
+</style>
+
+<body>
+          <div class="container">
+            <?php
+            $attributes = array("class" => "form-horizontal", "id" => "employeeform", "name" => "employeeform");
+            echo form_open("report/complete_report", $attributes);?>
+            <fieldset>
+            <div class="col-sm-offset-1 col-lg-8 col-sm-8 text-left">
+
+                 <div class="form-group">
+                <div class="row colbox">
+                <!--div class="col-lg-2 col-sm-2">
+                    <label for="reporttype" class="control-label">Report Type</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <select name="reporttype" class="form-control" id="reporttype">
+                                <option value="-SELECT-">-SELECT-</option>
+                                <option value="1">Collection Report</option>
+                                <option value="2">Estimate Report</option>
+                    </select>
+                    <span class="text-danger"><?php echo form_error('reporttype'); ?></span>
+                </div-->
+
+                <div class="col-lg-2 col-sm-2">
+                    <label for="parktype" class="control-label">Parking Type</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <?php
+                    $attributes = 'class = "form-control" id = "parktype"';
+                    echo form_dropdown('parktype',$parktype,set_value('parktype'),$attributes);?>
+                    <span class="text-danger"><?php echo form_error('parktype'); ?></span>
+                </div>
+                <div class="col-lg-2 col-sm-2">
+                    <label for="reporttype" class="control-label">Check IN/OUT</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                        <select name="reporttype" class="form-control" id="reporttype">
+                                <option value="-SELECT-">-SELECT-</option>
+                                <option value="0">Check IN</option>
+                                <option value="1">Check OUT</option>
+                        </select>
+                </div>
+
+                </div></div>
+
+                <div class="form-group">
+                <div class="row colbox">
+                <div class="col-lg-2 col-sm-2">
+                    <label for="fromdate" class="control-label">From Date</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                <input type="text" placeholder = "From Date" name = "fromdate" id="datepicker" class="datepicker"/>
+                <span class="fa fa-calendar fa-2x"></span>
+                </div>
+
+                <div class="col-lg-2 col-sm-2">
+                    <label for="todate" class="control-label">To Date</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                <input type="text" id="datepicker1"  placeholder = "To Date"  name = "todate" class="datepicker"/>
+                <span class="fa fa-calendar fa-2x"></span>
+                </div>
+
+                </div>
+                </div>
+
+                <div class="form-group">
+                <div class="row colbox">
+                <div class="col-lg-2 col-sm-2">
+                    <label for="slabtype" class="control-label">Slab Time</label>
+                </div>
+                <div class="col-lg-4 col-sm-4">
+                    <?php
+                    $attributes = 'class = "form-control" id = "slabtime"';
+                    echo form_dropdown('slabtime',$slabtime,set_value('slabtime'),$attributes);?>
+                    <span class="text-danger"><?php echo form_error('slabtime'); ?></span>
+                </div>
+                </div></div>
+            <div class="form-group">
+                <input id="btn_add" name="btn_add" type="submit" class="btn btn-primary" value="Search" />
+            </div>
+            </div>
+            </fieldset>
+            <?php echo form_close(); ?>
+            </div>
+            <div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading" id = "export-button">
+                        Vehicles Report
+                  </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="dataTable_wrapper">
+                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead style="background-color:#ECF0F5;">
+                            <tr>
+                              <th>#</th>
+                              <th>Vehicle Number</th>
+                              <th>Check In</th>
+                              <th>Check Out</th>
+                              <th>Charges</th>
+                              <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                         <?php $charges_t = 0;
+                                for ($i = 0; $i < count($report_data); ++$i) { ?>
+                              <tr id="hide-row_<?php echo $i;?>" class="hiderow">
+                                   <td><?php echo ($i+1); ?></td>
+                                   <td><?php echo $report_data[$i]->noplate; ?></td>
+                                   <td><?php echo $report_data[$i]->intime; ?></td>
+                                   <td><?php echo $report_data[$i]->outtime; ?></td>
+<?php /**********************if in records******************/
+                        $in = $report_data[$i]->intime;
+                        $out = date('Y-m-d H:i:s',time());
+                        $date_a = strtotime($in);
+                        $date_b = strtotime($out);
+                        #$interval = date_diff($date_a,$date_b); echo $hours = $interval->format('%h:%i:%s'); $h = $interval->format('%h'); $m = $interval->format('%i');
+                        $interval = abs($date_b - $date_a);
+                        $hrs = round($interval /(60*60));
+                        $minutes   = round($interval / 60);
+
+                $sql = "select charges from charges where typeid = '{$report_data[$i]->typeid}'";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                $result1 = array();
+                foreach ($result as $key => $value) {
+                    $result1['charges'] = $value->charges;
+                }
+                $charges =$result1['charges'];
+
+                $tot_str = $hrs.'.'.$minutes;
+                $hour_in_float = (float)$tot_str;
+                $total_charges = (ceil($hour_in_float/8))*$charges;
+		if(($report_data[$i]->status) == 1){ $income = $report_data[$i]->charges; }
+                                     elseif(($report_data[$i]->status) == 0){ $income = $total_charges; }
+/*****************************************/
+?>
+                                   <td><?php if(($report_data[$i]->status) == 0){ echo "<strong>".$income;}
+						else { echo $income; } ?>
+				   </td>
+                                <?php if(($report_data[$i]->status) == 1){$status = "OUT";}
+                                     elseif(($report_data[$i]->status) == 0){  $status = "IN";}?>
+                                   <td><?php echo $status; ?></td>
+                              </tr>
+                         <?php $charges = $report_data[$i]->charges;
+                                $charges_t = $charges_t + $charges; }
+                         ?>
+                        </tbody>
+                        <tr id="show-row" name="show" data-original-title="Click Here To show details" data-toggle="tooltip" data-placement="bottom" title="" class="red-tooltip">
+			<td></td><td colspan=3>Total Amount</td><td colspan=2><?php echo $charges_t; ?>
+                    </table>
+                </div>             <!-- /.table-responsive -->
+                                     </div>            <!-- /.panel-body -->
+        </div>        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+</div><!-- /.row -->
+          </div>
+    <!-- jQuery -->
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="<?php echo base_url('assets/data/bower_components/bootstrap/dist/js/bootstrap.min.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/data/bower_components/metisMenu/dist/metisMenu.min.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/data/bower_components/datatables/media/js/jquery.dataTables.min.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/data/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/data/dist/js/sb-admin-2.js'); ?>"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+                responsive: true
+        });
+    });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,709 @@
+<html>
+<head>
+<title>Formitable.class.php, 1.5 - Documentation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+#listing{
+	font-family: Arial, Helvetica, sans-serif;
+	width:100%;
+	max-width:724px;
+}
+#listing a {
+	font-weight: bold;
+	color: #006633;
+	text-decoration:none;
+	padding:2px;
+}
+#listing a:hover{ text-decoration:underline; }
+#listing sup { line-height:.5; }
+#func p, #func .desc, #listing{
+	border:1px solid #777; padding:7px;
+}
+#func code.func{}
+#legend{	margin:10px 0px 0px 7px; padding:7px;	background-color:white; border-left:1px solid #777;
+	float:right; display:inline;}
+#legend h3{ margin:0px; border-bottom: 1px solid black; }
+#func code.func{
+	display:block;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #E5E7DB;
+	padding: 4px;
+	font-size: small;
+}
+.return {
+	font-style: italic;
+}
+.funcname, #listing a {
+	font-weight: bold;
+	color: #006633;
+}
+.args {
+	color: #CC6600;
+}
+.opt {
+	color: #CC9900;
+}
+.type {
+	font-style: italic;
+}
+.detail {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+.sql {
+	font-family: "Courier New", Courier, mono;
+	font-style: normal;
+	font-weight: bold;
+	color: #777;
+}
+.html {
+	font-family: "Courier New", Courier, mono;
+	color: #0000CC;
+}
+.funcref, .funcref a:link, .funcref a:visited {
+	font-weight: bold;
+	color: #006633;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration:none;
+}
+.funcref a:hover {
+	text-decoration:underline;
+}
+#multi-notes {
+	margin:10 0 25px;
+}
+#multi-notes p {
+	margin:10px 0;
+}
+#multi-notes h4 {
+	margin:0 0 5px;
+}
+#multi-notes ul {
+	list-style-type:none;
+	margin:0 5px;
+	padding:0 5px;
+}
+.multi-table { font-size:100%; }
+.multi-table th { font-weight:bold; text-align:left; }
+.multi-table th,
+.multi-table td { padding:2px 5px; vertical-align:top; }
+-->
+</style>
+</head>
+<body>
+<h2>Documentation for Formitable 1.5</h2>
+
+<h3>Description</h3>
+<p>Formitable is a PHP class used to create HTML forms from MySQL database tables. The resulting forms are completely
+customizable and the data is automatically inserted into the database upon submisssion. Formitable can also be used to edit
+existing database records.</p>
+
+<a name="multi"></a>
+<h3>Working with Multiple Database Tables</h3>
+<p>Starting with version 1.5 Formitable supports building forms from and inserting data into multiple database tables.
+This has been the single most commonly requested feature since Formitable started. Multi-table support is enabled by passing an
+array of table names in the constructor. The returned Formitable object is referred to as the "root".
+<p>The root contains a Formitable "node" for each table passed in the constructor. All methods that accept a field name
+support "dot syntax" (<em>tableName.fieldName</em>) to configure fields for specific tables. A few methods require
+dot syntax. Many methods also support passing the field name without a table in which case the method will be applied
+to all tables passed in the constructor. Any further considerations for individual methods are noted below.</p>
+
+<div id="multi-notes">
+<h4>Legend for Multi-form Method Behavior</h4>
+<p>Each of the methods has a particular behavior when Formitable is instantiated with multiple tables. Those behaviors are noted by the following letters.</p>
+<table class="multi-table">
+<tr><th></th><th>Description</th></tr>
+<tr><td><em>a</em></td><td>Method can be called by the root or node with no difference in behavior.</td></tr>
+<tr><td><em>l</em></td><td>Method can be called by the root or node. When called by the root the method will be applied to all tables and will return an array of results unless dot syntax is used.</td></tr>
+<tr><td><em>f</em></td><td>Method can be called by the root or node. When called by the root a table name must be supplied using dot syntax.</td></tr>
+<tr><td><em>n</em></td><td>Method must be called by a node.</td></tr>
+<tr><td><em>r</em></td><td>Method must be called by the root.</td></tr>
+</table>
+</div>
+
+<h3>Summary of Public Methods</h3>
+
+<div id="listing">
+<table cellpadding=0 cellspacing=0 width=100% class="normal"><tr>
+<td width="17%" valign="top">
+<a href=#allowField><span class="funcname m-field">allowField</span></a> <sup><a href="#multi-notes">f</a></sup><br>
+<a href=#closeForm><span class="funcname m-all">closeForm</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#closeForm><span class="funcname m-any">decrypt</span></a> <sup><a href="#multi-notes">a</a></sup> *<br>
+<a href=#closeForm><span class="funcname m-any">encrypt</span></a> <sup><a href="#multi-notes">a</a></sup> *<br>
+<a href=#forceType><span class="funcname m-all">forceType</span> <sup><a href="#multi-notes">l</a></sup></a><br>
+<a href=#forceTypes><span class="funcname m-all">forceTypes</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#getFieldLabel><span class="funcname m-field">getFieldDefault</span></a> <sup><a href="#multi-notes">f</a></sup> *<br>
+<a href=#getFieldLabel><span class="funcname m-field">getFieldLabel</span></a> <sup><a href="#multi-notes">f</a></sup><br>
+</td><td width="18%" valign="top">
+<a href=#getFieldValue><span class="funcname m-field">getFieldValue</span></a> <sup><a href="#multi-notes">f</a></sup><br>
+<a href=#getLabels><span class="funcname m-all">getLabels</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#getPrimaryKey><span class="funcname m-node">getPrimaryKey</span></a> <sup><a href="#multi-notes">n</a></sup> *<br>
+<a href=#getRecord><span class="funcname m-all">getRecord</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#hideField><span class="funcname m-all">hideField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#hideFields><span class="funcname m-all">hideFields</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#labelField><span class="funcname m-all">labelField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#labelFields><span class="funcname m-all">labelFields</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+</td><td width="22%" valign="top">
+<a href=#multiPage><span class="funcname m-root">multiPage</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#normalizedField><span class="funcname m-all">normalizedField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#openForm><span class="funcname m-root">openForm</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#printField><span class="funcname m-all">printField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#printForm><span class="funcname m-all">printForm</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#printFromTemplate><span class="funcname m-root">printFromTemplate</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#query><span class="funcname m-any">query</span></a> <sup><a href="#multi-notes">a</a></sup> *<br>
+<a href=#registerCallback><span class="funcname m-all">registerCallback</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+</td><td width="19%" valign="top">
+<a href=#registerValidation><span class="funcname m-all">registerValidation</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setBreaks><span class="funcname m-all">setBreaks</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setDefaultValue><span class="funcname m-all">setDefaultValue</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setEncryptionKey><span class="funcname m-root">setEncryptionKey</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#setFeedback><span class="funcname m-root">setFeedback</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#setFieldBreak><span class="funcname m-all">setFieldBreak</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setLabelBreak><span class="funcname m-all">setLabelBreak</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setOptionBreak><span class="funcname m-all">setOptionBreak</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+</td><td width="25%" valign="top">
+<a href=#setPrimaryKey><span class="funcname m-all">setPrimaryKey</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#setTemplateDelimiters><span class="funcname m-root">setTemplateDelimiters</span></a> <sup><a href="#multi-notes">r</a></sup><br>
+<a href=#skipField><span class="funcname m-all">skipField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#skipFields><span class="funcname m-all">skipFields</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#submitForm><span class="funcname m-all">submitForm</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#toggleFieldSets><span class="funcname m-all">toggleFieldSets</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#uniqueField><span class="funcname m-all">uniqueField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<a href=#validateField><span class="funcname m-all">validateField</span></a> <sup><a href="#multi-notes">l</a></sup><br>
+<span class="normal">* new in ver 1.5</span>
+</td></tr></table>
+</div>
+
+<div id="legend">
+	<h3>Legend</h3>
+	<span class="return">return type</span><br>
+	<span class="funcname">method</span><br>
+	<span class="args"><span class="return">type</span> arguments</span><br>
+	<span class="opt">[<span class="return">type</span> optional arguments]</span><br>
+	<span class="sql">MySQL syntax</span><br>
+	<span class="html">html</span><br>
+</div>
+<div id="func">
+
+<a name="constructor"></a>
+<p><code class="func"><span class="return">Formitable object</span> <span class="funcname">Formitable</span>
+	(<span class="args"><span class="type">resource</span> $connection, <span class="type">str</span> $database, <span class="type">str/array</span> $table</span>)</code><br>
+	<span class="detail">Description:</span> The Formitable constructor.<br>
+	<span class="detail">Parameters:</span> <span class="args">connection</span> is a resource as returned by
+		<a href="http://www.php.net/mysql_connect">mysql_connect</a>, either as a variable or passed directly.
+	<span class="args">database</span> is the database name.
+	<span class="args">table</span> is the table name, or an array of tables for a multi-table form (see notes on <a href="#multi">multi-table support</a> for the latter.</p>
+
+<a name="allowField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">allowField</span>
+	(<span class="args"><span class="type">str</span> $fieldName</span> <span class="opt"> [, <span class="type">str</span> $from *]</span>)</code><br>
+	<span class="detail">Description:</span> Adds a field to the form signature,
+	allowing it to be submitted and inserted into the table. Use this method when
+	you want to include an arbitrary field in the database query when it was
+	not output by Formitable. This method is only necessary when using encryption.<br>
+	<span class="detail">Parameters:</span> <span class="args">fieldName</span>
+	is the <span class="html">form</span> <span class="html">input</span> <span class="html">name</span>. <span class="args">from</span>
+	allows one field value to be used in another field upon submission, even if the field is in another table.<br>
+	<span class="detail">Notes:</span> This method is only necessary when using encryption and you want to allow an arbitrary field to be submitted. It is also useful to allow the value of one field to be submitted for another.<br>
+	<span class="detail">Multi-table Notes:</span> The <span class="args">from</span> parameter requires dot syntax even if the field is in the same table.</p>
+
+<a name="closeForm"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">closeForm</span>
+	(<span class="opt">[<span class="type">str</span> $submitValue=&quot;Submit&quot; [, <span class="type">str</span> $attr=&quot;&quot; [, <span class="type">str</span> $resetValue=&quot;Reset Form&quot; [, <span class="type">bool</span> $printReset=true [, <span class="type">bool</span> $closeForm=true ]]]]</span>)</code><br>
+	<span class="detail">Description:</span> Closes the <span class="html">form</span> and prints
+	the <span class="html">hidden input</span> &quot;pkey&quot; if a record has been
+	retrieved using <span class="funcref">getRecord</span> and the page value if using <span class="funcref">multiPage</span>.
+	It is recommended that you use <span class="funcref">setEncryptionKey</span> to
+	encrypt the <span class="html">value</span> of &quot;pkey&quot;.<br>
+	<span class="detail">Parameters:</span> <span class="opt">submitValue</span>
+	is the <span class="html">submit</span> button text, use &quot;<em>image:</em>path/to/image.gif&quot;
+	for an <span class="html">image</span> <span class="html">type</span> submit.
+	<span class="opt">attr</span> is any attributes you want to add to the <span class="html">submit</span>
+	button. <span class="opt">resetValue</span> is the <span class="html">reset</span> button text.
+	<span class="opt">printReset</span> determines whether or not to output the reset button. <span class="opt">closeForm</span> determines whether or not to output the closing form tag &lt;/form&gt;, this can be useful when you want to include extra form fields after the submit or include multiple submits.<br>
+	<span class="detail">Multi-table Notes:</span> This method should only be called by the root.</p>
+
+<a name="forceType"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">forceType</span>
+	(<span class="args"><span class="type">str</span> $fieldName, <span class="type">str</span>
+	$inputType</span>)</code><br>
+	<span class="detail">Description:</span> Forces a <span class="html">form</span>
+	field to an explicit <span class="html">input</span> type regardless of size.<br>
+	<span class="detail">Parameters:</span> The name of the field and the html
+	input type respectively. Valid field/input types are as follows:<br>
+	&nbsp; &nbsp; for <span class="sql">enum</span> field -&quot;select&quot;
+	or &quot;radio&quot;<br>
+	&nbsp; &nbsp; for <span class="sql">set</span> field - &quot;multiselect&quot;
+	or &quot;checkbox&quot;<br>
+	&nbsp; &nbsp; for <span class="sql">string</span> or <span class="sql">blob</span>
+	field - &quot;text&quot;, &quot;textarea&quot;, &quot;password&quot; or &quot;file&quot;<br>
+	<span class="detail">Notes:</span> All field types can also be forced as &quot;hidden&quot;
+	to output a <span class="html">hidden input</span>. A hidden value is also encrypted when using
+	<span class="funcref">setEncryptionKey</span>. Input types other than those above are ignored.</p>
+
+<a name="forceTypes"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcref">forceTypes</span> (<span class="args"><span class="type">array</span> $fieldNames[], <span class="type">array</span> $inputTypes[]</span>)</code><br>
+	<span class="detail">Description:</span> Same as above but the parameters
+	are arrays.<br>
+	<span class="detail">Returns:</span> False if the arrays are different sizes,
+	True otherwise.</p>
+
+<a name="getFieldLabel"></a>
+<p><code class="func"><span class="return">str </span> <span class="funcname">getFieldLabel</span>
+	(<span class="args"><span class="type">str</span> $fieldName</span>)</code>
+	<br>
+	<span class="detail">Description:</span> Returns a field's label, either as
+	was set by <span class="funcref">labelField</span> or by generating it from
+	the field name by making the first letters uppercase and replacing underscores
+	(_) with spaces (ex. my_field becomes 'My Field'.)<br>
+	<span class="detail">Parameters:</span> The name of the field.<br>
+	<span class="detail">Multi-table Notes:</span> The <span class="args">fieldName</span> parameter requires dot syntax.</p>
+
+<a name="getFieldValue"></a>
+<p><code class="func"><span class="return">bool/str </span> <span class="funcname">getFieldValue</span> (<span class="args"><span class="type">str</span> $fieldName</span>)
+	</code><br>
+	<span class="detail">Description:</span> Get a field's value from an retrieved record or POST. This is useful
+	for testing a value before outputting it or performing other value based logic.<br>
+	<span class="detail">Parameters:</span> The name of the field.<br>
+	<span class="detail">Returns:</span> The field's value or false if invalid.<br>
+	<span class="detail">Notes:</span> Call <span class="funcref">getRecord</span> first.<br>
+	<span class="detail">Multi-table Notes:</span> The <span class="args">fieldName</span> parameter requires dot syntax.</p>
+
+<a name="getLabels"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">getLabels</span>
+	(<span class="args"><span class="type">str</span> $fieldName, <span class="type">str</span>
+	$tableName<span class="opt"> [, <span class="type">str</span> $tableKey = &quot;ID&quot; [, 
+	<span class="type">str</span> $tableValue = &quot;name&quot; ]]</span></span>)
+	</code><br>
+	<span class="detail">Description:</span> Retrieves records from another table
+	to be used as <span class="html">label</span>s for <span class="sql">enum</span>
+	or <span class="sql">set</span> field types.<br>
+	<span class="detail">Parameters:</span> <span class="args">fieldName</span>
+	is the field to get labels for and must be of either the <span class="sql">enum</span>
+	or <span class="sql">set</span> data types. Any other type will be ignored.
+	<span class="args">tableName</span> is a table in the same database that stores
+	the label/value pairs. <span class="opt">tableValue</span> is the name of
+	the field in the table <span class="args">tableName</span> containing the
+	label displayed to the user. <span class="opt">tableKey</span> is the unique
+	identifier/<span class="sql">primary key</span> in the table <span class="args">tableName</span>
+	that will be used as the <span class="html">input value</span>. The <span class="opt">tableKey</span>
+	values must correspond to valid values in the <span class="sql">enum</span>
+	or <span class="sql">set</span>.<br>
+	<span class="detail">Notes:</span> Use the default values when designing your
+	table to save yourself a bit of code.</p>
+
+<a name="getRecord"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcname">getRecord</span> (<span class="args"><span class="type">str</span> $id</span>)</code><br>
+	<span class="detail">Description:</span> Queries the table for a record to
+	output as the <span class="html">input</span> <span class="html">value</span>
+	for each field in the <span class="html">form</span>. Used to update records.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span>The <span class="field">primary
+	key</span> value of the record to retrieve.<br>
+	<span class="detail">Returns:</span> True if a single record was retrieved successfully, false otherwise.<br>
+	<span class="detail">Notes:</span> You must call <span class="funcref">setPrimaryKey</span> first.</p>
+
+<a name="getPrimaryKey"></a>
+<p><code class="func"><span class="return">int/bool</span> <span class="funcname">getPrimaryKey</span> ()</code><br>
+	<span class="detail">Description:</span> Returns the primary key from the last <span class="sql">INSERT</span> or <span class="sql">UPDATE</span>.<br>
+	<span class="detail">Returns:</span> An integer id of the last affected record, or false on error.<br>
+	<span class="detail">Notes:</span> The primary key must have the <span class="sql">AUTO_INCREMENT</span> attribute.</p>
+
+<a name="hideField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">hideField</span> (<span class="args"><span class="type">str</span> $fieldName</span>)</code><br>
+	<span class="detail">Description:</span> Omits a field from HTML output.<br>
+	<span class="detail">Parameters:</span> The name of the field.<br>
+	<span class="detail">Notes:</span> To output a field of <span class="html">type hidden</span> use <span class="funcname">forceType</span>.</p>
+
+<a name="hideFields"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">hideFields</span> (<span class="args"><span class="type">array</span> $fieldNames[]</span>)</code><br>
+	<span class="detail">Description:</span> Same as above but the parameter
+	is an array of names.</p>
+
+<a name="labelField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">labelField</span> (<span class="args"><span class="type">str</span> $fieldName, <span class="type">str</span> $fieldLabel</span>)</code><br>
+	<span class="detail">Description:</span> Sets a <span class="args">fieldName</span>'s <span class="html">input
+	label </span>text to <span class="args">fieldLabel</span> for output.<br>
+	<span class="detail">Notes:</span> If no custom label is provided using labelField(s) or getLabels, the label will
+	be generated from the field name
+	by making the first letter uppercase and replacing underscores (_) with spaces (ex. my_field becomes 'My Field'.)	</p>
+
+<a name="labelFields"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcname">labelFields</span> (<span class="args"><span class="type">array</span> $fieldNames[], <span class="type">str</span> $fieldLabels[]</span>)</code><br>
+	<span class="detail">Description:</span> Same as above but the parameters
+	are arrays.<br>
+	<span class="detail">Returns:</span> False if the arrays are different sizes, True otherwise.
+	</p>
+
+<a name="multiPage"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">multiPage</span> (<span class="args"><span class="type">str</span> $step<span class="opt"> [, <span class="type">str</span> $buttonValue=&quot;Continue&quot; ]</span></span>)
+	</code><br>
+	<span class="detail">Description:</span> Outputs a hidden field that enables
+	the functionality of a multi page form.<br>
+	<span class="detail">Parameters:</span> The page step (&quot;start&quot; for
+	the first page, &quot;next&quot; for intermediate pages, and &quot;end&quot; for
+	the last page), and optional <span class="html">button</span> value.<br>
+	<span class="detail">Notes:</span> See examples for further details on pagination.
+	Also see <span class="funcref">setEncryptionKey</span>.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="normalizedField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">normalizedField</span> (<span class="args">
+	<span class="type">str</span> $fieldName, <span class="type">str</span> $tableName<span class="opt"> [, 
+	<span class="type">str</span> $tableKey = &quot;ID&quot; [, <span class="type">str</span> $tableValue = &quot;name&quot;
+	 [, <span class="type">str</span> $orderBy = &quot;value ASC&quot; [, <span class="type">str</span> $whereClause
+	= &quot;1&quot; ]]]]</span></span>)</code><br>
+	<span class="detail">Description:</span> Retrieves records from another table to be used as label/value pairs for
+	the <span class="html">input</span> types of <span class="html">select</span>, <span class="html">radio</span>,
+	and <span class="html">checkbox</span>. Optional parameters are used to customize the query.<br>
+	<span class="detail">Parameters:</span> <span class="args">fieldName</span> is the field to get values for and must
+	be of either the <span class="sql">enum</span>, <span class="sql">set</span>,
+	or <span class="sql">int</span> data types. Any other type will be ignored. <span class="args">tableName</span>
+	is a table in the same database that stores the label/value pairs. <span class="opt">tableValue</span> is
+	the name of the field in the table <span class="args">tableName</span> containing the label displayed to the user.
+	<span class="opt">tableKey</span> is the unique identifier/<span class="sql">primary key</span> in the table
+	<span class="args">tableName</span> that will be used as the <span class="html">input value</span>.
+	<span class="opt">orderBy</span> is the order clause used to <span class="sql">SELECT</span> record from
+	<span class="args">tableName</span>. <span class="opt">whereClause</span> is the where clause used in the
+	<span class="sql">SELECT</span> statement.<br>
+	<span class="detail">Notes:</span> When specifying the <span class="opt">orderBy</span> and/or
+	<span class="opt">whereClause</span> parameters use &quot;pkey&quot; and &quot;value&quot; to reference
+	<span class="opt">tableKey</span> and <span class="opt">tableValue</span> respectively.</p>
+
+<a name="openForm"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">openForm</span>
+	(<span class="args"><span class="opt">[<span class="type">str</span> $attr=&quot;&quot; [, 
+	$autoSubmit=true]]</span></span>) </code><br>
+	<span class="detail">Description:</span> Opens the <span class="html">form</span>
+	tag or submits the form if pkey is set in POST.<br>
+	<span class="detail">Parameters:</span> <span class="opt">attr</span> are
+	extra attributes to include inside the closing bracket of the <span class="html">form</span>
+	tag, useful for client side scripts, styles, and a custom action. <span class="opt">autoSubmit</span>
+	determines whether or not to <span class="sql">insert</span>/<span class="sql">update</span>
+	the record automatically upon submission. <span class="opt">action</span> is deprecated in favor of
+	including <span class="html">action</span> in <span class="opt">attr</span>.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="printField"></a>
+<p><code class="func"><span class="return">int</span> <span class="funcname">printField</span> (<span class="args"><span class="type">str</span> $fieldName<span class="opt"> [, <span class="type">str</span> $attributes=&quot;&quot; [, <span class="type"> bool</span> $verify=false ]]</span></span>)
+	</code><br>
+	<span class="detail">Description:</span> Outputs a field by name.<br>
+	<span class="detail">Parameters:</span> The field's name, optional extra
+	attributes to include inside the closing bracket of the <span class="html">input</span> tag (useful javascript,
+	ids, classes etc.),
+	and an optional flag to output the field as a verification field (see notes
+	below).<br>
+	<span class="detail">Returns:</span> 1 if <span class="args">fieldName</span> is
+	valid, 0 otherwise.<br>
+	<span class="detail">Notes:</span> Set <span class="opt">verify</span> to
+	true to output an <span class="html">input</span> field that has the same
+	settings as <span class="args">fieldName</span>, but with a unique name.
+	This tells Formitable to compare the two fields when the <span class="html">form</span> is
+	submitted to make sure they contain the same values, otherwise validation
+	will fail. This functionality is commonly used with passwords and email addresses.</p>
+
+<a name="printForm"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">printForm</span> ()</code><br>
+	<span class="detail">Description:</span> Outputs the entire form.<br>
+	<span class="detail">Notes:</span> To customize your form layout use <span class="funcref">printField</span> along
+	with <span class="funcref">openForm</span> and <span class="funcref">closeForm</span>, or use <span class="funcref">printFromTemplate</span>.<br>
+	<span class="detail">Multi-table Notes:</span> This method should only be called by the root.</p>
+
+<a name="printFromTemplate"></a>
+<div class="desc"><code class="func"><span class="return">bool/str</span> <span class="funcref">printFromTemplate</span> (<span class="args"><span class="type">str</span> $tpl</span>)</code><br>
+	<span class="detail">Description:</span> Outputs the entire form using a template string or file.The template delimiters
+	{ and } can be changed using <span class="funcref">setTemplateDelimiters</span>.<br>
+	<span class="detail">Returns:</span> True if 
+	the form was printed successfully. False if $tpl is a <span class="args">file</span> that is unreadable. String when
+	the <span class='args'>returnOutput</span> property is set to true. The template should use
+	{field_name} syntax where the fields should be printed. You can pass the attr argument to printField by seperating the value with a comma (ex. {field_name,class="foobar"}).<br>
+	<span class="detail">Notes:</span> There are several special syntax cases:
+	<ol>
+	<li>An arbitrary PHP variable can be included in the template (ex. {php:varName}). A hash of up to two
+	dimensions is also supported (ex. {php:my:foo:bar} expands to $my['foo']['bar'], {php:_SERVER:QUERY_STRING} expands to $_SERVER['QUERY_STRING']).</li>
+	<li>The various breaks can be set anywhere in the template. These
+	breaks include field, label, and option; {setBreak:field:&lt;/td&gt;&lt;td&gt;},
+	{setBreak:label:&lt;br&gt;}, and {setBreak:option:&amp;nbsp;&amp;nbsp;} respectively
+	(see <span class="funcref">setFieldBreak</span>, <span class="funcref">setLabelBreak</span>,
+	and <span class="funcref">setOptionBreak</span> for more info.)</li>
+	<li>The other two special cases are to open the form {open_form} and close the form {close_form}. You can also pass arguments to the respective methods (ex. {close_form,Do it!,onclick="validateForm();",Clear}, see <span class="funcref">openForm</span> and <span class="funcref">closeForm</span>.)</li>
+	</ol>
+	<span class="detail">Multi-table Notes:</span> Dot syntax is required: {tableName.fieldName}. This method can only be called by the root.</div>
+
+<a name="query"></a>
+<p><code class="func"><span class="return">mixed</span> <span class="funcname">query</span>
+	(<span class="args"><span class="type">str</span> $sqlQuery<span class="opt"> [, <span class="type">const</span> $resultType</span> ]</span>)</code><br>
+	<span class="detail">Description:</span> Performs an arbitrary query on the database provided in the constructor.<br>
+	<span class="detail">Returns:</span> The raw resource as returned by <a href="http://www.php.net/mysql_query">mysql_query</a> or an array if <span class='args'>resultType</span> is one of the constants MYSQL_ASSOC, MYSQL_NUM, or MYSQL_BOTH, as passed to <a href="http://www.php.net/mysql_fetch_array">mysql_fetch_array</a>.<br>
+</p>
+
+<a name="registerCallback"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcname">registerCallback</span>
+	(<span class="args"><span class="type">str</span> $fieldName, <span class="type">str</span>
+	$functionName<span class="opt"> [, <span class="type">str</span> $mode = &quot;post&quot; [,
+	<span class="type">mixed</span> $args = &quot;&quot; ]]</span></span>)</code><br>
+	<span class="detail">Description:</span> Registers a function that is run against a field
+	value before post or retrieval.<br>
+	<span class="detail">Parameters:</span> <span class="args">fieldName</span>
+	is the name of the field to run the function <span class="args">functionName</span>
+	against. <span class="opt">mode</span>
+	should be &quot;post&quot; to run the function when the form is submitted,
+	&quot;retrieve&quot; when a record is retrieved for update, or &quot;both&quot;
+	to run the function on both post (before <span class="sql">insert</span>/<span class="sql">update</span>)
+	and retrieve (before display.)<br>
+	<span class="detail">Returns:</span> True if the mode is valid and the function
+	is callable, otherwise false.<br>
+	<span class="detail">Notes:</span> The callback function must accept exactly
+	three parameters: $key which is the <span class="args">fieldName</span>,
+	$value which is the value of <span class="args">fieldName</span>
+	either from the database or form submission, and $args which passes <span class="opt">args</span>
+	exactly as it was passed to <span class="funcref">registerCallback</span>
+	(hint: pass an array or object for multiple arguments.) <em><b>Return values:</b></em> A value should always
+	be returned by the callback function, that value will become the value displayed in the form and/or submitted. <em><b>Using for validation:</b></em> The callback can also be used as an alternate
+	means of validation. To cause the validation to fail you must return an array
+	with two keys, one key &quot;status&quot; must be set to &quot;failed&quot;,
+	the other key &quot;errMsg&quot; is the feedback message displayed to the
+	user (ex. return array(&quot;status&quot;=&gt;&quot;failed&quot;, &quot;errMsg&quot;=&gt;&quot;This
+	field is not valid.&quot;);) <em><b>Interaction with <span class="funcref">validateField</span>:</b></em> When using <span class="funcref">validateField</span> and <span class="funcref">registerCallback</span> on the same field the callback will only be run if the field passes normal validation first.</p>
+
+<a name="registerValidation"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">registerValidation</span> (<span class="args"><span class="type">str</span> $methodName, <span class="type">str</span> $regex<span class="opt"> [, <span class="type">str</span> $errText
+	= &quot;Invalid input.&quot; ]</span></span>) </code><br>
+	<span class="detail">Description:</span> Registers a new validation type.<br>
+	<span class="detail">Parameters:</span> An arbitrary method name (later called
+	with <span class="funcref">validateField</span>), a PHP <strong>ereg</strong> style
+	regular expression, and an optional string containing a default error message
+	respectively.<br>
+	<span class="detail">Notes:</span> Consult the PHP manual for more information: <a href="http://www.php.net/ereg/" target="_blank">http://www.php.net/ereg/</a></p>
+
+<a name="setBreaks"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setBreaks</span> (<span class="args"><span class="type">str</span> $label, <span class="type">str</span> $field<span class="opt"> [, <span class="type">str</span> $option=null ]</span></span>)
+	</code><br>
+	<span class="detail">Description:</span> Allows you set all breaks including <span class="html">label</span>, <span class="html">input</span> and <span class="html">option</span> in
+	one function call. See <span class="funcref">setFieldBreak</span>, <span class="funcref">setLabelBreak</span>,
+	and <span class="funcref">setOptionBreak</span>.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span> HTML code
+	for label break, field break, and option break respectively.</p>
+
+<a name="setDefaultValue"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setDefaultValue</span>
+	(<span class="args"><span class="type">str</span> $fieldName<span class="opt"> [, 
+	<span class="type">str</span> $fieldValue=&quot;&quot;, <span class="type">bool</span>
+	$overrideRetrieved=false ]</span></span>)</code><br>
+	<span class="detail">Description:</span> Sets the default value for a <span class="html">form input</span>.<br>
+	<span class="detail">Parameters:</span> <span class="args">fieldName</span>
+	is the name of the field to set the value for. <span class="opt">fieldValue</span>
+	is the value to be set. <span class="opt">overrideRetrieved</span>
+	determines whether to set the value for only a new record (false) or a retrieved
+	value as well (true.)<br>
+	<span class="detail">Notes:</span> For the <span class="sql">set</span> field type
+	use a list of comma seperated values (ex. "value1,value2,value3".)</p>
+
+<a name="setEncryptionKey"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setEncryptionKey</span> (<span class="args"><span class="type">str</span>
+	$key</span>) </code><br>
+	<span class="detail">Description:</span> Sets a &quot;password&quot; for rc4
+	encryption/decryption of any <span class="html">hidden</span> <span class="html">input</span>
+	<span class="html">value</span> including the <span class="sql">primary</span>
+	<span class="sql">key</span> and form signature. If <span class="funcname">setEncryptionKey</span>
+	is not called, these values are output in plain text (with exception of the
+	form signature which isn't output at all.) It is recommended to always use
+	encryption on any public facing form.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span>A unique
+	text string.<br>
+	<span class="detail">Notes:</span> This function is provided as a security
+	measure. <em>The rc4 encryption class is provided by Mukul Sabharwal and was
+	downloaded from mjsabby.com</em>.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="setFeedback"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcname">setFeedback</span> (<span class="args"><span class="type">str</span> $mode</span>)</code><br>
+	<span class="detail">Description:</span> Sets the error feedback method when <span class="html">input</span> validation
+	fails.<br>
+	<span class="detail">Parameters:</span> Feedback method; &quot;line&quot; for
+	feedback output under <span class="html">input</span> <span class="html">label</span>s, &quot;box&quot; for
+	a feedback box above the form, or &quot;both&quot;, default is &quot;both&quot;.<br>
+	<span class="detail">Returns:</span> False if the parameter is not one of
+	the above, otherwise True.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="setFieldBreak"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setFieldBreak</span> (<span class="args"><span class="type">str</span> $HTML</span>)</code><br>
+	<span class="detail">Description:</span> Sets the HTML output immediately
+	following all <span class="html">input</span> tags.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span> HTML code,
+	default value is &quot;&lt;br&gt;&lt;br&gt;\n\n&quot;</p>
+
+<a name="setLabelBreak"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setLabelBreak</span> (<span class="args"><span class="type">str</span> $HTML</span>)</code><br>
+	<span class="detail">Description:</span> Sets the HTML output immediately
+	following <span class="html">label</span> tags.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span> HTML code,
+	default value is &quot;&lt;br&gt;\n&quot;.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="setOptionBreak"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setOptionBreak</span> (<span class="args"><span class="type">str</span> $HTML</span>)
+	</code><br>
+	<span class="detail">Description:</span> Sets the HTML immediately following <span class="html">radio</span>/<span class="html">checkbox</span> options,
+	useful for layout purposes.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span> HTML code,
+	default value i blank.</p>
+
+<a name="setPrimaryKey"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setPrimaryKey</span> (<span class="args"><span class="type">str</span> $pkey_name</span>)</code><br>
+	<span class="detail">Description:</span> Sets the name of the table's <span class="sql">primary
+	key</span>. This is necessary when 1) retrieving or updating a record using
+	<span class="funcref">getRecord </span>or <span class="funcref">submitForm</span>,
+	2) using <span class="funcref">multiPage</span> functionality, and 3) validating
+	a field using <span class="funcref">uniqueField</span>. <br>
+	<span class="detail">Parameters:</span> <span class="args"></span>Name of
+	the table's primary key, default value is &quot;ID&quot;.<br>
+	<span class="detail">Notes:</span> It is recommended that you also call <span class="funcref">setEncryptionKey</span> in
+	scenarios 1 and 2 above. See <span class="funcref">closeForm</span>.</p>
+
+<a name="setTemplateDelimiters"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">setTemplateDelimiters</span> (<span class="args"><span class="type">str</span> $start, <span class="type">str</span> $end</span>)</code><br>
+	<span class="detail">Description:</span> Sets the start and end delimiters for the replaced tokens
+	in a template file used with <span class="funcref">printFromTemplate</span>. <br>
+	<span class="detail">Notes:</span> The default values are { and } respectively.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="skipField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">skipField</span> (<span class="args"><span class="type">str</span> $fieldName</span>)
+	</code><br>
+	<span class="detail">Description:</span> Forces a <span class="html">form</span> field
+	to be skipped on <span class="sql">INSERT</span> or <span class="sql">UPDATE</span>,
+	sometimes neccessary for values used in client side scripts that are not
+	part of the table definition.<br>
+	<span class="detail">Parameters:</span> The name of the field to skip.</p>
+
+<a name="skipFields"></a>
+<p><code class="func"><span class="return">bool</span> <span class="funcname">skipFields</span> (<span class="args"><span class="type">array</span> $fieldNames[]</span>)
+	</code><br>
+	<span class="detail">Description:</span> Same as above but the parameter
+	is an array of field names.<br>
+	<span class="detail">Returns:</span> False if the argument is not an array,
+	True otherwise.</p>
+
+<a name="submitForm"></a>
+<p><code class="func"><span class="return">int</span> <span class="funcname">submitForm</span> (<span class="opt">[<span class="type">bool</span> $echo=true ]</span>)</code><br>
+	<span class="detail">Description:</span> Submits the form to the database, <span class="sql">UPDATE</span> the
+	record if <span class="html">hidden input</span> &quot;pkey&quot; is set,
+	otherwise<br>
+	<span class="sql">INSERT</span> a new record.<br>
+	<span class="detail">Parameters:</span> Optionally set <span class="opt">echo</span> to
+	false to return result string instead of printing it.<br>
+	<span class="detail">Returns:</span> -1 if validation failed, 0 if query
+	failed, 1 if query was successful, <span class="return">string</span> if
+	validation succeeded an parameter <span class="opt">echo</span> was false.<br>
+	<span class="detail">Multi-table Notes:</span> This method can only be called by the root.</p>
+
+<a name="toggleFieldSets"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">toggleFieldSets</span> (<span class="args"><span class="type">bool</span> $toggle</span>)
+	</code><br>
+	<span class="detail">Description:</span> Sets the <span class="html">fieldset</span>s
+	option.<br>
+	<span class="detail">Parameters:</span> <span class="args"></span>Boolean
+	true or false, default is true.</p>
+
+<a name="uniqueField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">uniqueField</span> (<span class="args"><span class="type">str</span> $fieldName<span class="opt"> [, <span class="type">str</span> $msg=&quot;Already
+	taken.&quot; ]</span></span>) </code><br>
+	<span class="detail">Description:</span> Queries existing records for the
+	field value, validation fails if found.<br>
+	<span class="detail">Parameters:</span> The field's name to query for, and
+	an optional string containing a custom error message.</p>
+
+<a name="validateField"></a>
+<p><code class="func"><span class="return">void</span> <span class="funcname">validateField</span> (<span class="args"><span class="type">str</span> $fieldName, <span class="type">str</span> $methodName<span class="opt"> [, <span class="type">str</span> $errText
+	= &quot;NONE&quot; ]</span></span>) </code><br>
+	<span class="detail">Description:</span> Sets a field's validation method
+	to validate on submit.<br>
+	<span class="detail">Parameters:</span> The field's name, the method name
+	(set using <span class="funcref">registerValidation</span>), and an optional
+	string containing a custom error message respectively. See <span class="funcref">printField</span> notes.</p>
+
+</div>
+
+
+
+<h3>Summary of Public Attributes</h3>
+<p>Set the following attributes like so: $newForm-&gt;attrName=&quot;value&quot;;</p>
+<div id="func">
+<p><span class="args">returnOutput</span>, boolean, default value is false<br>
+	<br>
+	<span class="detail">Description:</span> Set this attribute to true to return
+	output instead of printing it. Expect a returned value from <span class="funcref">openForm</span>,
+	<span class="funcref">printField</span>, <span class="funcref">closeForm</span>,
+	<span class="funcref">printForm</span>, and <span class="funcref">submitForm</span>.
+	Useful for templating systems or any other time the output needs to be assigned
+	to a variable.</p>
+<p><span class="args">enumField_toggle</span>, default value of 3<br>
+	<span class="args">setField_toggle</span>, default value of 4<br>
+	<span class="args">strField_toggle</span>, default value of 70<br>
+	<br>
+	<span class="detail">Description:</span> These attributes determine whether
+	to use the default <span class="html">input</span> type or the alternate based
+	on <span class="sql">field</span> size. Sizes less than or equal to the
+	default value use the alternate type. Use the <span class="funcref">forceType</span>
+	method to override the toggle setting.<br>
+	<br>
+	<span class="detail">Notes:</span> <span class="sql">field</span> type to
+	<span class="html">input</span> types are as follows:<br>
+	<span class="sql">enum</span> field default type is <span class="html">select</span>,
+	alternate is <span class="html">radio</span><br>
+	<span class="sql">set</span> field default type is <span class="html">multiselect</span>,
+	alternate is <span class="html">checkbox</span><br>
+	<span class="sql">blob</span> or text field default type is <span class="html">textarea</span>,
+	alternate is <span class="html">text </span></p>
+<p><span class="args">textInputLength</span>, default value of 50<br>
+	<span class="args">textareaRows</span>, default value of 4<br>
+	<span class="args">textareaCols</span>, default value of 50<br>
+	<span class="args">multiSelectSize</span>, default value of 4<br>
+	<br>
+	<span class="detail">Description:</span> These attributes determine <span class="html">input
+	size</span>. Visual layout should be determined by the stylesheet.</p>
+<p><span class="args">msg_insertSuccess</span>, default value is:<br>
+	<span class="html">&lt;center&gt;&lt;label class=&quot;font&quot;&gt;Form has been submitted
+	successfully.&lt;/label&gt;&lt;/center&gt;</span><br>
+	<span class="args">msg_insertFail</span>, default value is:<br>
+	<span class="html">&lt;center&gt;&lt;label class=&quot;font&quot;&gt;&lt;b&gt;An error
+	occurred.&lt;/b&gt;&lt;br&gt;Form submission failed.&lt;/label&gt;&lt;/center&gt;</span><br>
+	<span class="args">msg_updateSuccess</span>, default value is:<br>
+	<span class="html">&lt;center&gt;&lt;label class=&quot;font&quot;&gt;Record has been
+	updated successfully.&lt;/label&gt;&lt;/center&gt;</span><br>
+	<span class="args">msg_updateFail</span>, default value is:<br>
+	<span class="html">&lt;center&gt;&lt;label class=&quot;font&quot;&gt;&lt;b&gt;An error
+	occurred.&lt;/b&gt;&lt;br&gt;Record update failed.&lt;/label&gt;&lt;/center&gt;</span><br>
+	<br>
+	<span class="detail">Description:</span> These attributes hold the string
+	returned on success or fail of record <span class="sql">INSERT</span> and
+	<span class="sql">UPDATE</span>. Set them to an empty string if you want
+	to handle success or fail manually.</p>
+<p><span class="args">err_pre</span>, default value is <span class="html">&lt;br&gt;&lt;span
+	class=&quot;err&quot;&gt;</span><br>
+	<span class="args">err_post</span>, default value is <span class="html">&lt;/span&gt;</span><br>
+	<br>
+	<span class="args">err_box_pre</span>, default value is <span class="html">&lt;center&gt;&lt;div class="errbox"&gt;</span><br>
+	<span class="args">err_box_post</span>, default value is <span class="html">&lt;/div&gt;&lt;/center&gt;</span><br>
+	<br>
+	<span class="detail">Description:</span> These attributes hold the strings
+	output immediately before and after error messages.</p>
+<p><span class="args">mysql_errors</span>, boolean, default value is false<br>
+	<br>
+	<span class="detail">Description:</span> Set to true to output MySQL errors along with error text.</p>
+</div>
+<script>
+(function(){
+var spans = document.getElementsByTagName("span");
+for(var s=0, ln = spans.length; s<ln; s++){
+	if(spans[s].className == "funcref"){
+		var func = spans[s].innerHTML;
+		spans[s].innerHTML = '<a href="#'+func+'">'+func+'</a>';
+	}	
+}
+})();
+</script>
+</body>
+</html>

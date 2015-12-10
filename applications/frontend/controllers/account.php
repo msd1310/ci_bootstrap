@@ -1,4 +1,6 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+   ini_set('memory_limit', '1024M');
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 //BOOTSTRAPLL
 date_default_timezone_set("Asia/Kolkata");
 
@@ -25,6 +27,8 @@ class Account extends MY_Controller {
 		$this->load->helper('email');
 		$this->load->library('pagination');
     $this->load->library('excel');
+
+		$this->load->library('grocery_CRUD');
 	}
 
 	// Account Dashboard / Home
@@ -73,6 +77,24 @@ class Account extends MY_Controller {
 		$this->mViewFile = 'login';
 
 	}
+
+  public function country(){
+
+	$this->grocery_crud->set_table('countrylanguage');
+	$this->grocery_crud->set_theme('datatables');
+	$output=$this->grocery_crud->render();
+	$out = (array) $output;
+   $this->mViewFile='myView';
+	 $this->mViewData = $out;
+	 	//	$this->mViewData['output'] = $this->grocery_crud->render();
+	// echo '<pre>';
+	// print_r($output);
+		//$this->load->view('myView.php',$output);
+ }
+
+
+
+
 
 	public function logout_user()
 	    {
@@ -420,6 +442,7 @@ public function insertdata()
 		$data['parktype'] = $this->employee_model->get_department();
 		$data['maxid'] = $this->employee_model->get_maxid();
 		//set validation rules
+
 		$this->form_validation->set_rules('pid', 'Id', 'trim|numeric');
 		$this->form_validation->set_rules('noplate', 'Number Plate', '');
 		$this->form_validation->set_rules('parktype', 'Department','callback_combo_check');
@@ -774,64 +797,62 @@ echo json_encode($result);
 public function ExportToExcel(){
 
             $this->load->library('Excel');
+               //$this->db->select('*');
+							// $this->db->from('park');
+              // $this->db->limit(10);
 	         $data['rs'] =  $this->db->get('park');
            $this->load->view('search1', $data);
 
-                 $this->excel->setActiveSheetIndex(0);
-                 //name the worksheet
-                 $this->excel->getActiveSheet()->setTitle('Park');
-                 //set cell A1 content with some text
-                 $this->excel->getActiveSheet()->setCellValue('A1', 'Park Excel Sheet');
-                 $this->excel->getActiveSheet()->setCellValue('A4', 'Receipt No.');
-                 $this->excel->getActiveSheet()->setCellValue('B4', 'Vehicle No');
-                 $this->excel->getActiveSheet()->setCellValue('C4', 'Status');
-								 $this->excel->getActiveSheet()->setCellValue('C4', 'Update');
-                 //merge cell A1 until C1
-                 $this->excel->getActiveSheet()->mergeCells('A1:C1');
-                 //set aligment to center for that merged cell (A1 to C1)
-                 $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                 //make the font become bold
-                 $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-                 $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(16);
-                 $this->excel->getActiveSheet()->getStyle('A1')->getFill()->getStartColor()->setARGB('#333');
-        for($col = ord('A'); $col <= ord('C'); $col++){
-                 //set column dimension
-                 $this->excel->getActiveSheet()->getColumnDimension(chr($col))->setAutoSize(true);
-                  //change the font size
-                 $this->excel->getActiveSheet()->getStyle(chr($col))->getFont()->setSize(12);
+					 $this->excel->setActiveSheetIndex(0);
+				//name the worksheet
+				$this->excel->getActiveSheet()->setTitle('Parking ExcelSheet');
+				//set cell A1 content with some text
+				$this->excel->getActiveSheet()->setCellValue('A1', 'Parking Excel Sheet');
+				$this->excel->getActiveSheet()->setCellValue('A4', 'Receipt No.');
+				$this->excel->getActiveSheet()->setCellValue('B4', 'Vehicle No.');
+				$this->excel->getActiveSheet()->setCellValue('C4', 'Status');
+					$this->excel->getActiveSheet()->setCellValue('C4', 'Update');
+				//merge cell A1 until C1
+				$this->excel->getActiveSheet()->mergeCells('A1:C1');
+				//set aligment to center for that merged cell (A1 to C1)
+				$this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				//make the font become bold
+				$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+				$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(16);
+				$this->excel->getActiveSheet()->getStyle('A1')->getFill()->getStartColor()->setARGB('#333');
+for($col = ord('A'); $col <= ord('C'); $col++){
+				//set column dimension
+				$this->excel->getActiveSheet()->getColumnDimension(chr($col))->setAutoSize(true);
+				 //change the font size
+				$this->excel->getActiveSheet()->getStyle(chr($col))->getFont()->setSize(12);
 
-                 $this->excel->getActiveSheet()->getStyle(chr($col))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-         }
-                 //retrive park table data
-                 $rs = $this->db->get('park');
-                 $exceldata="";
-         foreach ($rs->result_array() as $row){
-                 $exceldata[] = $row;
-         }
-                 //Fill data
-                 $this->excel->getActiveSheet()->fromArray($exceldata, null, 'A4');
+				$this->excel->getActiveSheet()->getStyle(chr($col))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+}
+				//retrive contries table data
+				$rs = $this->db->get('park');
+				$exceldata="";
+foreach ($rs->result_array() as $row){
+				$exceldata[] = $row;
+}
+				//Fill data
+				$this->excel->getActiveSheet()->fromArray($exceldata, null, 'A4');
 
-                 $this->excel->getActiveSheet()->getStyle('A4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                 $this->excel->getActiveSheet()->getStyle('B4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                 $this->excel->getActiveSheet()->getStyle('C4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$this->excel->getActiveSheet()->getStyle('A4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$this->excel->getActiveSheet()->getStyle('B4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$this->excel->getActiveSheet()->getStyle('C4')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-                 $filename='ExportToExcel.xls'; //save our workbook as this file name
-                 header('Content-Type: application/vnd.ms-excel'); //mime type
-                 header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
-                 header('Cache-Control: max-age=0'); //no cache
+				$filename='PHPExcelSheet.xls'; //save our workbook as this file name
+				header('Content-Type: application/vnd.ms-excel'); //mime type
+				header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+				header('Cache-Control: max-age=0'); //no cache
 
-                 //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
-                 //if you want to save it as .XLSX Excel 2007 format
-                 $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
-                 //force user to download the Excel file without writing it to server's HD
-                 $objWriter->save('php://output');
+				//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+				//if you want to save it as .XLSX Excel 2007 format
+				$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+				//force user to download the Excel file without writing it to server's HD
+				$objWriter->save('php://output');
 
-     }
-
-
-
-
-
+}
 
  public function Get_All(){
 $search =  $this->input->post('search');
@@ -853,12 +874,12 @@ $result['result']=$this->employee_model->get_data($search);
     $search =  $this->input->post('search');
 
     $query = $this->employee_model->getVesselName($search);
-    //print_r($query->result());
+  //  print_r($query->result());
     $result = $query->result();
     //$aa=0;
     foreach ($result as $res) {
 
-      $data[] = array("id" => $res->id ,"name"=> $res->vesselname);
+      $data[] = array("id" => $res->id ,"name"=> $res->vessel_name);
 
     }
 
@@ -911,8 +932,8 @@ if($this->input->post())
 
 		$this->mTitle = "Eg in controller";
 	 //$this->mViewFile = 'search';
-   //	$this->mViewFile = 'tables';
-		 $this->mViewFile = 'search1';
+   	//$this->mViewFile = 'tables';
+     $this->mViewFile = 'search1';
 
 	}
 
